@@ -1,7 +1,6 @@
 const Data = require('../models/Data');
 exports.getData = async(req,res) =>{
     const {startDate , endDate  , gender , ageRange } = req.query ; 
-    // let start = new Date(startDate) ,  end = new Date(endDate);
     const _query={};
     if(startDate && endDate ){
       const start = new Date(startDate);
@@ -19,7 +18,6 @@ exports.getData = async(req,res) =>{
         _query.ageRange = ageRange;
       }
       try{
-        console.log("==query==" , _query)
         const filteredData = await Data.find(_query);
         res.json(filteredData);
       }catch(error){

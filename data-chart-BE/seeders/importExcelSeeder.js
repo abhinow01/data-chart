@@ -1,10 +1,10 @@
-require('dotenv').config();  // To load environment variables from .env
+require('dotenv').config();  
 const xlsx = require('xlsx');
 const mongoose = require('mongoose');
 const connectDB = require('../src/config/db');
-const Data = require('../src/models/Data');  // Import your model
+const Data = require('../src/models/Data'); 
 
-// Function to convert Excel serial date to JavaScript Date
+// convert Excel serial date to JavaScript Date
 const excelDateToJSDate = (serial) => {
   const utcDays = Math.floor(serial - 25569); // Excel's epoch starts from 1/1/1900
   const utcValue = utcDays * 86400; // seconds in a day
@@ -24,19 +24,16 @@ const excelDateToJSDate = (serial) => {
   return dateInfo;
 };
 
-// Function to parse Excel and save to MongoDB
 const importExcelDataToMongoDB = async (filePath) => {
   try {
-    // Connect to the database
     await connectDB();
 
     // Read Excel file
     const workbook = xlsx.readFile(filePath);
-    const sheetName = workbook.SheetNames[0];  // Assuming the first sheet
+    const sheetName = workbook.SheetNames[0];  
     const sheet = workbook.Sheets[sheetName];
     const jsonData = xlsx.utils.sheet_to_json(sheet);
 
-    // Loop through and save each record
     for (const record of jsonData) {
       let formattedDate;
 
@@ -45,13 +42,12 @@ const importExcelDataToMongoDB = async (filePath) => {
         // Convert Excel serial date to JS date
         formattedDate = excelDateToJSDate(record['Day']);
       } else if (typeof record['Day'] === 'string') {
-        // If it's a string, assume it's in MM/DD/YYYY format
-        const [day, month, year] = record['Day'].split('/').map(Number);
+        const [day, month, year] = record['Day'].split('/').map(Number); //MM/DD/YY fromat string
         formattedDate = new Date(year, month - 1, day);
       }
 
       const newRecord = new Data({
-        day: formattedDate,  // Store the properly formatted Date
+        day: formattedDate,  
         ageRange: record['Age'],
         gender: record['Gender'],
         A: record['A'],
@@ -72,5 +68,4 @@ const importExcelDataToMongoDB = async (filePath) => {
   }
 };
 
-// Run the seeder with the path to your Excel file
-importExcelDataToMongoDB('/Users/abhinavkhanna/Downloads/Frontend Developer Assignment Data.xlsx');
+importExcelDataToMongoDB(process.env.FILE_PATH);

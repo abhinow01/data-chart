@@ -4,7 +4,7 @@ import { Bar, Line } from 'react-chartjs-2';
 import axios from 'axios';
 import Chart from 'chart.js/auto';
 import { useLocation, useNavigate } from 'react-router-dom';
-
+const base_url = process.env.BASE_URL
 const BarLineChart = () => {
     const [chartData, setChartData] = useState({});
     const [isCopied, setIsCopied] = useState(false);
@@ -65,7 +65,7 @@ const BarLineChart = () => {
       const endDate = filters.endDate ? new Date(filters.endDate).toISOString() : null;
       console.log("filters" , filters)
       try {
-        const response = await axios.get('http://localhost:3000/api/data/analytics', {
+        const response = await axios.get(`${base_url}/api/data/analytics`, {
           headers : {
             Authorization: `Bearer ${token}`,
           },
@@ -76,7 +76,6 @@ const BarLineChart = () => {
             gender: filters.gender,
           }
         });
-        console.log("==params==" , filters)
         console.log(response)
         const data = response.data;
         const dates = data.map((item) => new Date(item.day).toLocaleDateString());
@@ -197,7 +196,6 @@ const BarLineChart = () => {
           </label>
         </div>
   
-        {/* Render charts only if chartData is valid */}
         {chartData.labels && chartData.datasets && (
           <div className='flex flex-row p-2 justify-center items-center'>
             {/* Bar Chart */}
@@ -221,12 +219,6 @@ const BarLineChart = () => {
             </div>
           </div>
         )}
-        {/* <button
-        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
-        onClick={generateShareableLink}
-      >
-        {isCopied ? 'Link Copied!' : 'Copy Link'}
-      </button> */}
 
       </div>
     );

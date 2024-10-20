@@ -2,6 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { Link , useNavigate } from 'react-router-dom';
 import axios from 'axios';
+const base_url = process.env.BASE_URL
 const Home = () => {
     const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -10,16 +11,16 @@ const Home = () => {
     const handleSignup = async (e) => {
         // e.preventDefault();
         try {
-          const response = await axios.post('http://localhost:3000/api/auth/signup', {
+          const response = await axios.post(`${base_url}/api/auth/signup`, {
             username,
             email,
             password,
           });
     
           if (response.data.success) {
-            // Store the token (you might use localStorage or cookies)
+            // Store the token 
             localStorage.setItem('token', response.data.token);
-            navigate('/chart'); // Redirect to the chart page
+            navigate('/chart'); 
           } else {
             console.error('Signup failed');
           }

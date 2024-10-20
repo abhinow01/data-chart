@@ -2,6 +2,8 @@ import React from 'react'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+const base_url = process.env.BASE_URL
+
 const Login = () => {
     const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -10,20 +12,16 @@ const Login = () => {
   const handleLogin = async (e) => {
     // e.preventDefault(); 
     try {
-      const response = await axios.post('http://localhost:3000/api/auth/login', { email, password });
+      const response = await axios.post(`${base_url}/api/auth/login`, { email, password });
   
       if (response.data.success) {
         // Store the token
         localStorage.setItem('token', response.data.token);
-        
         // Check for a stored redirect URL
-        const redirectUrl = localStorage.getItem('redirectUrl');
-        
+        const redirectUrl = localStorage.getItem('redirectUrl'); 
         if (redirectUrl) {
-          // Clear the stored URL
           navigate(redirectUrl);
-          localStorage.removeItem('redirectUrl');
-                    
+          localStorage.removeItem('redirectUrl');// Clear the stored URL
         } else {
           navigate('/chart');
         }
