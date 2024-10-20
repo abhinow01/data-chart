@@ -55,12 +55,9 @@ const BarLineChart = () => {
     const fetchData = async () => {
       const token = localStorage.getItem('token'); 
 
-    // if (!token) {
-    //   navigate(`/login?redirect=${encodeURIComponent(location.pathname + '?' + queryParams)}`);
-    //   return;
-    // }
     if (!token) {
-      localStorage.setItem('filters', JSON.stringify(filters)); // Store filters before redirect
+      const currentUrl = `${location.pathname}${location.search}`;
+      localStorage.setItem('redirectUrl', currentUrl);
       navigate('/login');
       return 
     }

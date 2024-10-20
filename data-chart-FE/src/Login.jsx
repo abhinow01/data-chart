@@ -5,21 +5,35 @@ import axios from 'axios';
 const Login = () => {
     const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
   const handleLogin = async (e) => {
-    // e.preventDefault();
+    // e.preventDefault(); 
     try {
       const response = await axios.post('http://localhost:3000/api/auth/login', { email, password });
-
+  
       if (response.data.success) {
         // Store the token
         localStorage.setItem('token', response.data.token);
-        navigate('/chart'); // Redirect to chart page
+        
+        // Check for a stored redirect URL
+        const redirectUrl = localStorage.getItem('redirectUrl');
+        
+        if (redirectUrl) {
+          // Clear the stored URL
+          navigate(redirectUrl);
+          localStorage.removeItem('redirectUrl');
+                    
+        } else {
+          navigate('/chart');
+        }
       } else {
         console.error('Login failed');
+        setError('Login failed. Please check your credentials.');
       }
     } catch (error) {
       console.error('Error during login', error);
+      setError('An error occurred during login. Please try again.');
     }
   };
   return (
